@@ -34,6 +34,9 @@ function TaskDashboard({ user, onLogout }) {
     return saved ? JSON.parse(saved) : initialTasks;
   });
   const [filterUser, setFilterUser] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterDueDate, setFilterDueDate] = useState('all');
+  const [sortOption, setSortOption] = useState('dueDateAsc');
   const [view, setView] = useState('list'); // 'list', 'calendar', 'create', 'settings'
   const [searchTerm, setSearchTerm] = useState('');
   const [editingTask, setEditingTask] = useState(null);
@@ -86,13 +89,57 @@ function TaskDashboard({ user, onLogout }) {
     setTasks((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const filterByStatus = (task) => {
+    if (filterStatus === 'all') return true;
+    return task.status === filterStatus;
+  };
+
+  const filterByDueDate = (task) => {
+    if (filterDueDate === 'all') return true;
+    const now = new Date();
+    const dueDate = new Date(task.dueDate);
+    if (filterDueDate === 'overdue') {
+      return dueDate < now;
+    }
+    if (filterDueDate === 'today') {
+      return dueDate.toDateString() === now.toDateString();
+    }
+    if (filterDueDate === 'week') {
+      const weekFromNow = new Date();
+      weekFromNow.setDate(now.getDate() + 7);
+      return dueDate >= now && dueDate <= weekFromNow;
+    }
+    return true;
+  };
+
+  const sortTasks = (a, b) => {
+    if (sortOption === 'dueDateAsc') {
+      return new Date(a.dueDate) - new Date(b.dueDate);
+    }
+    if (sortOption === 'dueDateDesc') {
+      return new Date(b.dueDate) - new Date(a.dueDate);
+    }
+    if (sortOption === 'priorityAsc') {
+      const priorityOrder = { high: 1, medium: 2, low: 3 };
+      return priorityOrder[a.urgency] - priorityOrder[b.urgency];
+    }
+    if (sortOption === 'priorityDesc') {
+      const priorityOrder = { high: 1, medium: 2, low: 3 };
+      return priorityOrder[b.urgency] - priorityOrder[a.urgency];
+    }
+    return 0;
+  };
+
   const filteredTasks =
     tasks
       .filter((t) => (filterUser === 'all' ? true : t.assignedTo === filterUser))
+      .filter(filterByStatus)
+      .filter(filterByDueDate)
       .filter((t) =>
         t.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         t.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      )
+      .sort(sortTasks);
 
   const uniqueUsers = Array.from(new Set(tasks.map((t) => t.assignedTo)));
 
@@ -208,6 +255,45 @@ function TaskDashboard({ user, onLogout }) {
           <>
             <section className="tasks">
               <h2>My Tasks</h2>
+              <div style={{ marginBottom: '15px' }}>
+                <label htmlFor="filterStatus" style={{ marginRight: '10px' }}>Filter by Status:</label>
+                <select
+                  id="filterStatus"
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  style={{ marginRight: '20px' }}
+                >
+                  <option value="all">All</option>
+                  <option value="incomplete">Incomplete</option>
+                  <option value="in progress">In Progress</option>
+                  <option value="complete">Complete</option>
+                </select>
+
+                <label htmlFor="filterDueDate" style={{ marginRight: '10px' }}>Filter by Due Date:</label>
+                <select
+                  id="filterDueDate"
+                  value={filterDueDate}
+                  onChange={(e) => setFilterDueDate(e.target.value)}
+                  style={{ marginRight: '20px' }}
+                >
+                  <option value="all">All</option>
+                  <option value="overdue">Overdue</option>
+                  <option value="today">Today</option>
+                  <option value="week">Next 7 Days</option>
+                </select>
+
+                <label htmlFor="sortOption" style={{ marginRight: '10px' }}>Sort by:</label>
+                <select
+                  id="sortOption"
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                >
+                  <option value="dueDateAsc">Due Date Ascending</option>
+                  <option value="dueDateDesc">Due Date Descending</option>
+                  <option value="priorityAsc">Priority Ascending</option>
+                  <option value="priorityDesc">Priority Descending</option>
+                </select>
+              </div>
               <TaskList
                 tasks={filteredTasks}
                 updateTask={updateTask}
@@ -222,3 +308,30 @@ function TaskDashboard({ user, onLogout }) {
                 addTask={addTask}
                 currentUser={user.email}
                 editingTask={editingTask}
+                updateTask={updateTask}
+                cancelEdit={() => setEditingTask(null)}
+                preFillDate={null}
+              />
+            </section>
+          </>
+        )}
+        {view === 'calendar' && <CalendarView tasks={filteredTasks} onAddTask={handleAddTaskFromCalendar} />}
+        {view === 'create' && (
+          <section className="add-task">
+            <TaskForm
+              addTask={addTask}
+              currentUser={user.email}
+              editingTask={editingTask}
+              updateTask={updateTask}
+              cancelEdit={() => setEditingTask(null)}
+              preFillDate={preFillDate}
+            />
+          </section>
+        )}
+        {view === 'settings' && <Settings />}
+      </main>
+    </>
+  );
+}
+
+export default TaskDashboard;
