@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from 'react';
 
-const urgencyLevels = ['important', 'normal'];
+const urgencyLevels = ['high', 'medium', 'low'];
 
 function TaskForm({ addTask, currentUser, editingTask, updateTask, cancelEdit, preFillDate }) {
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
-  const [priority, setPriority] = useState('important');
+  const [priority, setPriority] = useState('medium');
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (editingTask) {
       setTitle(editingTask.title);
+      setDescription(editingTask.description || '');
       setDueDate(editingTask.dueDate);
-      setPriority(editingTask.urgency === 'high' ? 'important' : 'normal');
+      setPriority(['high', 'medium', 'low'].includes(editingTask.urgency) ? editingTask.urgency : 'medium');
     } else if (preFillDate) {
       setTitle('');
+      setDescription('');
       setDueDate(preFillDate);
-      setPriority('important');
+      setPriority('medium');
     } else {
       setTitle('');
+      setDescription('');
       setDueDate('');
-      setPriority('important');
+      setPriority('medium');
     }
   }, [editingTask, preFillDate]);
 
@@ -33,8 +37,9 @@ function TaskForm({ addTask, currentUser, editingTask, updateTask, cancelEdit, p
     setError('');
     const taskData = {
       title,
+      description,
       dueDate,
-      urgency: priority === 'important' ? 'high' : 'medium',
+      urgency: priority,
       assignedTo: currentUser,
       status: 'incomplete',
     };
@@ -45,8 +50,9 @@ function TaskForm({ addTask, currentUser, editingTask, updateTask, cancelEdit, p
     }
     if (!editingTask) {
       setTitle('');
+      setDescription('');
       setDueDate('');
-      setPriority('important');
+      setPriority('medium');
     }
   };
 
@@ -62,6 +68,15 @@ function TaskForm({ addTask, currentUser, editingTask, updateTask, cancelEdit, p
           onChange={(e) => setTitle(e.target.value)}
           placeholder="e.g. L3 Assessment"
           required
+        />
+
+        <label htmlFor="description">Description</label>
+        <textarea
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Add task description"
+          rows={4}
         />
 
         <label htmlFor="due-date">Due date*</label>

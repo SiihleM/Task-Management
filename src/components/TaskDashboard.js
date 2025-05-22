@@ -153,7 +153,7 @@ function TaskDashboard({ user, onLogout }) {
   return (
     <>
       <header style={{ backgroundColor: '#07162F', padding: '10px 20px', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ fontWeight: '800', fontSize: '22px', margin: 0 }}>Task Management Tracker</h1>
+        <h1 style={{ fontWeight: '800', fontSize: '22px', margin: 0 }}>Taskomatic</h1>
         <nav>
           <ul style={{ listStyle: 'none', display: 'flex', gap: '20px', margin: 0, padding: 0, alignItems: 'center' }}>
             <li>

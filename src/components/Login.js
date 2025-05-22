@@ -51,9 +51,9 @@ function Login({ onLogin }) {
         width: '360px',
         maxWidth: '100%'
       }}>
-        <h2 style={{ marginBottom: '20px', color: '#4a3f6f', fontWeight: '700', fontSize: '1.8rem', textAlign: 'center' }}>Login</h2>
+        <h2 style={{ marginBottom: '20px', color: '#000000', fontWeight: '700', fontSize: '1.8rem', textAlign: 'center' }}>Login</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-          <label htmlFor="email" style={{ marginBottom: '8px', color: '#764ba2', fontWeight: '600' }}>Email</label>
+          <label htmlFor="email" style={{ marginBottom: '8px', color: '#000000', fontWeight: '600' }}>Email</label>
           <input
             type="email"
             id="email"
@@ -72,7 +72,7 @@ function Login({ onLogin }) {
               transition: 'border-color 0.3s ease'
             }}
           />
-          <label htmlFor="password" style={{ marginBottom: '8px', color: '#764ba2', fontWeight: '600' }}>Password</label>
+          <label htmlFor="password" style={{ marginBottom: '8px', color: '#000000', fontWeight: '600' }}>Password</label>
           <input
             type="password"
             id="password"
@@ -93,7 +93,7 @@ function Login({ onLogin }) {
           />
           {error && <p style={{ color: '#b30000', marginBottom: '20px', fontWeight: '600' }}>{error}</p>}
           <button type="submit" style={{
-            backgroundColor: '#764ba2',
+            backgroundColor: '#E94E4E',
             color: '#fff',
             padding: '12px 0',
             border: 'none',
@@ -101,23 +101,23 @@ function Login({ onLogin }) {
             fontWeight: '700',
             fontSize: '1.1rem',
             cursor: 'pointer',
-            boxShadow: '0 4px 8px rgba(118, 75, 162, 0.4)',
+            boxShadow: '0 4px 8px rgba(233, 78, 78, 0.4)',
             transition: 'background 0.3s ease, box-shadow 0.3s ease'
           }}
             onMouseOver={e => {
-              e.currentTarget.style.backgroundColor = '#667eea';
-              e.currentTarget.style.boxShadow = '0 6px 12px rgba(102, 126, 234, 0.6)';
+              e.currentTarget.style.backgroundColor = '#c43b3b';
+              e.currentTarget.style.boxShadow = '0 6px 12px rgba(196, 59, 59, 0.6)';
             }}
             onMouseOut={e => {
-              e.currentTarget.style.backgroundColor = '#764ba2';
-              e.currentTarget.style.boxShadow = '0 4px 8px rgba(118, 75, 162, 0.4)';
+              e.currentTarget.style.backgroundColor = '#E94E4E';
+              e.currentTarget.style.boxShadow = '0 4px 8px rgba(233, 78, 78, 0.4)';
             }}
           >
             Login
           </button>
         </form>
-        <p style={{ marginTop: '15px', textAlign: 'center', color: '#4a3f6f' }}>
-          Don't have an account? <Link to="/signup" style={{ color: '#764ba2', fontWeight: '600', textDecoration: 'none' }}>Sign up here</Link>
+          <p style={{ marginTop: '15px', textAlign: 'center', color: '#07162F' }}>
+          Don't have an account? <Link to="/signup" style={{ color: '#07162F', fontWeight: '600', textDecoration: 'none' }}>Sign up here</Link>
         </p>
       </div>
     </div>
