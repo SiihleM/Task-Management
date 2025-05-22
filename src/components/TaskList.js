@@ -50,10 +50,16 @@ function TaskList({ tasks, updateTask, deleteTask, currentUser, setEditingTask, 
                 addComment={(comment) => addComment(task.id, comment)}
               />
             </div>
-            <div style={{ marginTop: '10px' }}>
-              <button onClick={() => setEditingTask(task)} style={{ marginRight: '10px' }}>Edit</button>
-              <button onClick={() => deleteTask(task.id)}>Delete</button>
-            </div>
+<div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+  <button onClick={() => setEditingTask(task)} title="Edit" style={{ cursor: 'pointer' }}>
+    Edit
+  </button>
+  <button onClick={() => deleteTask(task.id)} title="Delete" style={{ cursor: 'pointer' }}>
+    Delete
+  </button>
+</div>
+
+
           </div>
         ))
       )}

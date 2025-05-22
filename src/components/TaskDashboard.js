@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TaskList from './TaskList';
 import TaskForm from './TaskForm';
 import CalendarView from './CalendarView';
 import Settings from './Settings';
+import capacitizaLogo from './capacitiza_logo.jpg';
 
 const initialTasks = [
   {
@@ -42,6 +43,16 @@ function TaskDashboard({ user, onLogout }) {
   const [editingTask, setEditingTask] = useState(null);
   const [preFillDate, setPreFillDate] = useState(null);
   const [notifications, setNotifications] = useState([]);
+
+  // Ref for header element
+  const headerRef = useRef(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      setHeaderHeight(headerRef.current.offsetHeight);
+    }
+  }, []);
 
   // Add comment to task
   const addCommentToTask = (taskId, comment) => {
@@ -150,12 +161,63 @@ function TaskDashboard({ user, onLogout }) {
     setView('create');
   };
 
+  // New state for dropdown visibility
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+
+  // Toggle dropdown
+  const toggleProfileDropdown = () => {
+    setProfileDropdownOpen(!profileDropdownOpen);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.profile-dropdown') && !event.target.closest('.profile-avatar') && !event.target.closest('.notification-bell')) {
+        setProfileDropdownOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  // Get first letter of user email for avatar
+  const avatarLetter = user.email ? user.email.charAt(0).toUpperCase() : 'U';
+
   return (
     <>
-      <header style={{ backgroundColor: '#07162F', padding: '10px 20px', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ fontWeight: '800', fontSize: '22px', margin: 0 }}>Taskomatic</h1>
-        <nav>
-          <ul style={{ listStyle: 'none', display: 'flex', gap: '20px', margin: 0, padding: 0, alignItems: 'center' }}>
+      <header
+        ref={headerRef}
+        style={{
+          backgroundColor: '#07162F',
+          padding: '10px 20px',
+          color: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          position: 'fixed',
+          top: 0,
+          width: '100%',
+          zIndex: 1000,
+          flexWrap: 'wrap',
+          gap: '10px',
+        }}
+      >
+        <h1 style={{ fontWeight: '800', fontSize: '22px', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img src={capacitizaLogo} alt="Taskomatic Logo" style={{ height: '35px', width: '35px' }} />
+          Taskomatic
+        </h1>
+        <nav style={{ flexGrow: 1 }}>
+          <ul
+            style={{
+              listStyle: 'none',
+              display: 'flex',
+              gap: '20px',
+              margin: 0,
+              padding: 0,
+              alignItems: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
             <li>
               <button
                 onClick={() => setView('list')}
@@ -211,88 +273,251 @@ function TaskDashboard({ user, onLogout }) {
                 Create Task
               </button>
             </li>
-            <li>
-              <button
-                onClick={() => setView('settings')}
+            <li
+              style={{ marginLeft: 'auto', position: 'relative', display: 'flex', alignItems: 'center', gap: '15px' }}
+            >
+              {/* Notification Bell */}
+              <div
+                className="notification-bell"
                 style={{
-                  backgroundColor: view === 'settings' ? '#E94E4E' : 'transparent',
-                  color: view === 'settings' ? '#fff' : '#808191',
-                  border: 'none',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
                   cursor: 'pointer',
-                  fontWeight: '700',
-                  fontSize: '16px',
-                }}
-              >
-                Settings
-              </button>
-            </li>
-            <li style={{ marginLeft: 'auto', fontWeight: '600' }}>{user.email}</li>
-            <li>
-              <button
-                onClick={onLogout}
-                style={{
-                  backgroundColor: '#E94E4E',
                   color: '#fff',
-                  border: 'none',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: '700',
-                  fontSize: '16px',
+                  fontSize: '24px',
+                  position: 'relative',
                 }}
+                title="Notifications"
+                onClick={() => alert('Notifications clicked')} // Placeholder for notification click handler
               >
-                Logout
-              </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  width="28"
+                  height="28"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+                {notifications.length > 0 && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '-5px',
+                      right: '-5px',
+                      backgroundColor: '#E94E4E',
+                      borderRadius: '50%',
+                      width: '16px',
+                      height: '16px',
+                      color: '#fff',
+                      fontSize: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: '700',
+                    }}
+                  >
+                    {notifications.length}
+                  </span>
+                )}
+              </div>
+              {/* Profile Avatar */}
+              <div
+                className="profile-avatar"
+                onClick={toggleProfileDropdown}
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  backgroundColor: '#fff',
+                  color: '#07162F',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: '700',
+                  fontSize: '18px',
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                }}
+                title={user.email}
+              >
+                {avatarLetter}
+              </div>
+              {profileDropdownOpen && (
+                <div
+                  className="profile-dropdown"
+                  style={{
+                    position: 'absolute',
+                    top: '50px',
+                    right: 0,
+                    backgroundColor: '#fff',
+                    color: '#000',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    width: '200px',
+                    zIndex: 1000,
+                    padding: '10px',
+                  }}
+                >
+                  <div style={{ padding: '10px 0', borderBottom: '1px solid #ddd', fontWeight: '600' }}>
+                    {user.email}
+                  </div>
+                  <button
+                    onClick={() => setView('settings')}
+                    style={{
+                      marginTop: '10px',
+                      width: '100%',
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      color: '#07162F',
+                      fontWeight: '700',
+                      fontSize: '16px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      textAlign: 'left',
+                      padding: '8px 0',
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      width="20"
+                      height="20"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h.09a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51h.09a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v.09a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"
+                      />
+                    </svg>
+                    Settings
+                  </button>
+                  <button
+                    onClick={onLogout}
+                    style={{
+                      marginTop: '10px',
+                      width: '100%',
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      color: '#E94E4E',
+                      fontWeight: '700',
+                      fontSize: '16px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      width="20"
+                      height="20"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1"
+                      />
+                    </svg>
+                    Log Out
+                  </button>
+                </div>
+              )}
             </li>
           </ul>
         </nav>
       </header>
 
-      <main style={{ padding: '20px' }}>
+      <main style={{ paddingTop: headerHeight, padding: '20px' }}>
         {view === 'list' && (
           <>
             <section className="tasks">
               <h2>My Tasks</h2>
-              <div style={{ marginBottom: '15px' }}>
-                <label htmlFor="filterStatus" style={{ marginRight: '10px' }}>Filter by Status:</label>
-                <select
-                  id="filterStatus"
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  style={{ marginRight: '20px' }}
-                >
-                  <option value="all">All</option>
-                  <option value="incomplete">Incomplete</option>
-                  <option value="in progress">In Progress</option>
-                  <option value="complete">Complete</option>
-                </select>
+              <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <label htmlFor="filterStatus" style={{ marginRight: '10px' }}>Filter by Status:</label>
+                  <select
+                    id="filterStatus"
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    style={{ marginRight: '20px' }}
+                  >
+                    <option value="all">All</option>
+                    <option value="incomplete">Incomplete</option>
+                    <option value="in progress">In Progress</option>
+                    <option value="complete">Complete</option>
+                  </select>
 
-                <label htmlFor="filterDueDate" style={{ marginRight: '10px' }}>Filter by Due Date:</label>
-                <select
-                  id="filterDueDate"
-                  value={filterDueDate}
-                  onChange={(e) => setFilterDueDate(e.target.value)}
-                  style={{ marginRight: '20px' }}
-                >
-                  <option value="all">All</option>
-                  <option value="overdue">Overdue</option>
-                  <option value="today">Today</option>
-                  <option value="week">Next 7 Days</option>
-                </select>
+                  <label htmlFor="filterDueDate" style={{ marginLeft: '20px', marginRight: '10px' }}>Filter by Due Date:</label>
+                  <select
+                    id="filterDueDate"
+                    value={filterDueDate}
+                    onChange={(e) => setFilterDueDate(e.target.value)}
+                    style={{ marginRight: '20px' }}
+                  >
+                    <option value="all">All</option>
+                    <option value="overdue">Overdue</option>
+                    <option value="today">Today</option>
+                    <option value="week">Next 7 Days</option>
+                  </select>
 
-                <label htmlFor="sortOption" style={{ marginRight: '10px' }}>Sort by:</label>
-                <select
-                  id="sortOption"
-                  value={sortOption}
-                  onChange={(e) => setSortOption(e.target.value)}
+                  <label htmlFor="sortOption" style={{ marginRight: '10px' }}>Sort by:</label>
+                  <select
+                    id="sortOption"
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value)}
+                  >
+                    <option value="dueDateAsc">Due Date Ascending</option>
+                    <option value="dueDateDesc">Due Date Descending</option>
+                    <option value="priorityAsc">Priority Ascending</option>
+                    <option value="priorityDesc">Priority Descending</option>
+                  </select>
+                </div>
+                <button
+                  onClick={() => {
+                    setView('create');
+                    setEditingTask(null);
+                    setPreFillDate(null);
+                  }}
+                  title="Add Task"
+                  style={{
+                    backgroundColor: '#E94E4E',
+                    border: 'none',
+                    color: '#fff',
+                    padding: '6px 12px',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontWeight: '700',
+                    fontSize: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
                 >
-                  <option value="dueDateAsc">Due Date Ascending</option>
-                  <option value="dueDateDesc">Due Date Descending</option>
-                  <option value="priorityAsc">Priority Ascending</option>
-                  <option value="priorityDesc">Priority Descending</option>
-                </select>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                  Add
+                </button>
               </div>
               <TaskList
                 tasks={filteredTasks}
@@ -301,16 +526,6 @@ function TaskDashboard({ user, onLogout }) {
                 currentUser={user.email}
                 setEditingTask={setEditingTask}
                 addComment={addCommentToTask}
-              />
-            </section>
-            <section className="add-task">
-              <TaskForm
-                addTask={addTask}
-                currentUser={user.email}
-                editingTask={editingTask}
-                updateTask={updateTask}
-                cancelEdit={() => setEditingTask(null)}
-                preFillDate={null}
               />
             </section>
           </>
