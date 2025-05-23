@@ -101,7 +101,7 @@ function TaskForm({ addTask, currentUser, editingTask, updateTask, cancelEdit, p
           ))}
         </select>
 
-        <button type="submit">{editingTask ? 'Update Task' : 'Submit'}</button>
+        <button type="submit" style={{ float: 'left' }}>{editingTask ? 'Update Task' : 'Submit'}</button>
         {editingTask && (
           <button type="button" onClick={cancelEdit} style={{ marginLeft: '10px' }}>
             Cancel

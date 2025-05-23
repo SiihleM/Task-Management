@@ -88,12 +88,20 @@ function TaskDashboard({ user, onLogout }) {
     setNotifications((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Helper to normalize dueDate to YYYY-MM-DD format
+  const normalizeDueDate = (dueDateStr) => {
+    if (!dueDateStr) return dueDateStr;
+    return dueDateStr.split('T')[0];
+  };
+
   const addTask = (task) => {
-    setTasks((prev) => [...prev, { ...task, id: Date.now() }]);
+    const normalizedTask = { ...task, id: Date.now(), dueDate: normalizeDueDate(task.dueDate) };
+    setTasks((prev) => [...prev, normalizedTask]);
   };
 
   const updateTask = (updatedTask) => {
-    setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
+    const normalizedTask = { ...updatedTask, dueDate: normalizeDueDate(updatedTask.dueDate) };
+    setTasks((prev) => prev.map((t) => (t.id === normalizedTask.id ? normalizedTask : t)));
     setEditingTask(null);
   };
 
@@ -109,7 +117,8 @@ function TaskDashboard({ user, onLogout }) {
 
   const filterByStatus = (task) => {
     if (filterStatus === 'all') return true;
-    return task.status === filterStatus;
+    // Normalize status to lowercase for comparison
+    return task.status.toLowerCase() === filterStatus.toLowerCase();
   };
 
   const filterByDueDate = (task) => {
@@ -220,13 +229,14 @@ function TaskDashboard({ user, onLogout }) {
             <li>
               <button
                 onClick={() => {
-                  setView('calendar');
-                  setShowNotifications(false);
-                }}
-                className={view === 'calendar' ? 'nav-button active' : 'nav-button'}
-              >
-                Calendar
-              </button>
+              setView('calendar');
+              setFilterDueDate('all');
+              setShowNotifications(false);
+            }}
+            className={view === 'calendar' ? 'nav-button active' : 'nav-button'}
+          >
+            Calendar
+          </button>
             </li>
             <li>
               <button
@@ -345,8 +355,40 @@ function TaskDashboard({ user, onLogout }) {
         {view === 'list' && (
           <>
             <section className="tasks">
-              <h2>My Tasks</h2>
-              <div className="task-filters" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h2>My Tasks</h2>
+                <button
+                  onClick={() => {
+                    setView('create');
+                    setEditingTask(null);
+                    setPreFillDate(null);
+                  }}
+                  title="Add Task"
+                  className="add-task-button"
+                  style={{
+                    backgroundColor: '#E94E4E',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '6px',
+                    padding: '8px 16px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                    transition: 'background-color 0.3s ease',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#b33a3a'}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#E94E4E'}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                  Add
+                </button>
+              </div>
+              <div className="task-filters" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px', marginBottom: '20px' }}>
                 <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                   <div className="filter-group">
                     <label htmlFor="filterStatus">Filter by Status:</label>
@@ -358,7 +400,7 @@ function TaskDashboard({ user, onLogout }) {
                       <option value="all">All</option>
                       <option value="incomplete">Incomplete</option>
                       <option value="in progress">In Progress</option>
-                      <option value="complete">Complete</option>
+                      <option value="completed">Completed</option>
                     </select>
                   </div>
                   <div className="filter-group">
@@ -388,37 +430,6 @@ function TaskDashboard({ user, onLogout }) {
                     </select>
                   </div>
                 </div>
-                <button
-                  onClick={() => {
-                    setView('create');
-                    setEditingTask(null);
-                    setPreFillDate(null);
-                  }}
-                  title="Add Task"
-                  className="add-task-button"
-                  style={{
-                    alignSelf: 'flex-start',
-                    backgroundColor: '#007bff',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '6px',
-                    padding: '8px 16px',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                    transition: 'background-color 0.3s ease',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#0056b3'}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#007bff'}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                  </svg>
-                  Add
-                </button>
               </div>
               <TaskList
                 tasks={filteredTasks}
@@ -481,21 +492,6 @@ function TaskDashboard({ user, onLogout }) {
                 ))}
               </ul>
             )}
-            <button
-              onClick={() => setView('list')}
-              style={{
-                marginTop: '20px',
-                backgroundColor: '#E94E4E',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '12px',
-                padding: '10px 20px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-              }}
-            >
-              Back to Tasks
-            </button>
           </section>
         )}
       </main>

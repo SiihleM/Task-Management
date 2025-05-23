@@ -1,7 +1,7 @@
 import React from 'react';
 import TaskComments from './TaskComments';
 
-const statusOptions = ['incomplete', 'in progress', 'complete'];
+const statusOptions = ['incomplete', 'in progress', 'completed'];
 
 function TaskList({ tasks, updateTask, deleteTask, currentUser, setEditingTask, addComment }) {
   const handleStatusChange = (task, e) => {
@@ -18,8 +18,8 @@ function TaskList({ tasks, updateTask, deleteTask, currentUser, setEditingTask, 
     switch (status) {
       case 'in progress':
         return 'inprogress';
-      case 'complete':
-        return 'complete';
+      case 'completed':
+        return 'completed';
       case 'incomplete':
       default:
         return 'incomplete';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function CalendarView({ tasks, onAddTask }) {
+function CalendarView({ tasks, onAddTask, onTaskClick }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
 
@@ -111,7 +111,18 @@ function CalendarView({ tasks, onAddTask }) {
             >
               <strong>{date.getDate()}</strong>
               {dayTasks.map((task) => (
-                <div key={task.id} className="task-box" title={task.title} style={{ backgroundColor: '#fff', color: '#000', padding: '2px 4px', borderRadius: '4px', marginTop: '4px', fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <div
+                  key={task.id}
+                  className="task-box"
+                  title={task.title}
+                  style={{ backgroundColor: '#fff', color: '#000', padding: '2px 4px', borderRadius: '4px', marginTop: '4px', fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: 'pointer' }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (typeof onTaskClick === 'function') {
+                      onTaskClick(task);
+                    }
+                  }}
+                >
                   {task.title}
                 </div>
               ))}

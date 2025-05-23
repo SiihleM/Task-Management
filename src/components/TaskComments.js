@@ -31,7 +31,7 @@ function TaskComments({ comments = [], addComment }) {
           placeholder="Add a comment"
           style={{ flex: 1, padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
         />
-        <button onClick={handleAddComment} style={{ padding: '8px 12px', borderRadius: '6px', backgroundColor: '#764ba2', color: '#fff', border: 'none', cursor: 'pointer' }}>
+        <button onClick={handleAddComment} style={{ padding: '8px 12px', borderRadius: '6px', backgroundColor: '#E94E4E', color: '#fff', border: 'none', cursor: 'pointer', marginLeft: 'auto' }}>
           Add
         </button>
       </div>
