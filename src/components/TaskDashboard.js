@@ -38,11 +38,12 @@ function TaskDashboard({ user, onLogout }) {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterDueDate, setFilterDueDate] = useState('all');
   const [sortOption, setSortOption] = useState('dueDateAsc');
-  const [view, setView] = useState('list'); // 'list', 'calendar', 'create', 'settings'
+  const [view, setView] = useState('list'); // 'list', 'calendar', 'create', 'settings', 'notifications'
   const [searchTerm, setSearchTerm] = useState('');
   const [editingTask, setEditingTask] = useState(null);
   const [preFillDate, setPreFillDate] = useState(null);
   const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   // Ref for header element
   const headerRef = useRef(null);
@@ -94,6 +95,12 @@ function TaskDashboard({ user, onLogout }) {
   const updateTask = (updatedTask) => {
     setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
     setEditingTask(null);
+  };
+
+  // New handler to set editing task and switch view to 'create'
+  const handleEditTask = (task) => {
+    setEditingTask(task);
+    setView('create');
   };
 
   const deleteTask = (id) => {
@@ -172,8 +179,9 @@ function TaskDashboard({ user, onLogout }) {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest('.profile-dropdown') && !event.target.closest('.profile-avatar') && !event.target.closest('.notification-bell')) {
+      if (!event.target.closest('.profile-dropdown') && !event.target.closest('.profile-avatar') && !event.target.closest('.notification-bell') && !event.target.closest('.notifications-panel')) {
         setProfileDropdownOpen(false);
+        setShowNotifications(false);
       }
     };
     document.addEventListener('click', handleClickOutside);
@@ -183,71 +191,39 @@ function TaskDashboard({ user, onLogout }) {
   // Get first letter of user email for avatar
   const avatarLetter = user.email ? user.email.charAt(0).toUpperCase() : 'U';
 
+  // Toggle notifications panel
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    setProfileDropdownOpen(false);
+  };
+
   return (
     <>
-      <header
-        ref={headerRef}
-        style={{
-          backgroundColor: '#07162F',
-          padding: '10px 20px',
-          color: '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          position: 'fixed',
-          top: 0,
-          width: '100%',
-          zIndex: 1000,
-          flexWrap: 'wrap',
-          gap: '10px',
-        }}
-      >
-        <h1 style={{ fontWeight: '800', fontSize: '22px', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <img src={capacitizaLogo} alt="Taskomatic Logo" style={{ height: '35px', width: '35px' }} />
+      <header ref={headerRef} className="app-header">
+        <h1 className="app-title">
+          <img src={capacitizaLogo} alt="Taskomatic Logo" className="app-logo" />
           Taskomatic
         </h1>
-        <nav style={{ flexGrow: 1 }}>
-          <ul
-            style={{
-              listStyle: 'none',
-              display: 'flex',
-              gap: '20px',
-              margin: 0,
-              padding: 0,
-              alignItems: 'center',
-              flexWrap: 'wrap',
-            }}
-          >
+        <nav className="app-nav">
+          <ul className="nav-list">
             <li>
               <button
-                onClick={() => setView('list')}
-                style={{
-                  backgroundColor: view === 'list' ? '#E94E4E' : 'transparent',
-                  color: view === 'list' ? '#fff' : '#808191',
-                  border: 'none',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: '700',
-                  fontSize: '16px',
+                onClick={() => {
+                  setView('list');
+                  setShowNotifications(false);
                 }}
+                className={view === 'list' ? 'nav-button active' : 'nav-button'}
               >
                 My tasks
               </button>
             </li>
             <li>
               <button
-                onClick={() => setView('calendar')}
-                style={{
-                  backgroundColor: view === 'calendar' ? '#E94E4E' : 'transparent',
-                  color: view === 'calendar' ? '#fff' : '#808191',
-                  border: 'none',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: '700',
-                  fontSize: '16px',
+                onClick={() => {
+                  setView('calendar');
+                  setShowNotifications(false);
                 }}
+                className={view === 'calendar' ? 'nav-button active' : 'nav-button'}
               >
                 Calendar
               </button>
@@ -258,35 +234,24 @@ function TaskDashboard({ user, onLogout }) {
                   setView('create');
                   setEditingTask(null);
                   setPreFillDate(null);
+                  setShowNotifications(false);
                 }}
-                style={{
-                  backgroundColor: view === 'create' ? '#E94E4E' : 'transparent',
-                  color: view === 'create' ? '#fff' : '#808191',
-                  border: 'none',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: '700',
-                  fontSize: '16px',
-                }}
+                className={view === 'create' ? 'nav-button active' : 'nav-button'}
               >
                 Create Task
               </button>
             </li>
-            <li
-              style={{ marginLeft: 'auto', position: 'relative', display: 'flex', alignItems: 'center', gap: '15px' }}
-            >
+            <li className="nav-profile" style={{ marginLeft: 'auto', position: 'relative' }}>
               {/* Notification Bell */}
               <div
                 className="notification-bell"
-                style={{
-                  cursor: 'pointer',
-                  color: '#fff',
-                  fontSize: '24px',
-                  position: 'relative',
-                }}
                 title="Notifications"
-                onClick={() => alert('Notifications clicked')} // Placeholder for notification click handler
+                onClick={() => {
+                  console.log('Notification bell clicked');
+                  setView('notifications');
+                  setShowNotifications(false);
+                  setProfileDropdownOpen(false);
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -304,86 +269,21 @@ function TaskDashboard({ user, onLogout }) {
                   />
                 </svg>
                 {notifications.length > 0 && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      top: '-5px',
-                      right: '-5px',
-                      backgroundColor: '#E94E4E',
-                      borderRadius: '50%',
-                      width: '16px',
-                      height: '16px',
-                      color: '#fff',
-                      fontSize: '12px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: '700',
-                    }}
-                  >
-                    {notifications.length}
-                  </span>
+                  <span className="notification-count">{notifications.length}</span>
                 )}
               </div>
               {/* Profile Avatar */}
               <div
                 className="profile-avatar"
                 onClick={toggleProfileDropdown}
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  backgroundColor: '#fff',
-                  color: '#07162F',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: '700',
-                  fontSize: '18px',
-                  cursor: 'pointer',
-                  userSelect: 'none',
-                }}
                 title={user.email}
               >
                 {avatarLetter}
               </div>
               {profileDropdownOpen && (
-                <div
-                  className="profile-dropdown"
-                  style={{
-                    position: 'absolute',
-                    top: '50px',
-                    right: 0,
-                    backgroundColor: '#fff',
-                    color: '#000',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                    width: '200px',
-                    zIndex: 1000,
-                    padding: '10px',
-                  }}
-                >
-                  <div style={{ padding: '10px 0', borderBottom: '1px solid #ddd', fontWeight: '600' }}>
-                    {user.email}
-                  </div>
-                  <button
-                    onClick={() => setView('settings')}
-                    style={{
-                      marginTop: '10px',
-                      width: '100%',
-                      backgroundColor: 'transparent',
-                      border: 'none',
-                      color: '#07162F',
-                      fontWeight: '700',
-                      fontSize: '16px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      textAlign: 'left',
-                      padding: '8px 0',
-                    }}
-                  >
+                <div className="profile-dropdown">
+                  <div className="profile-email">{user.email}</div>
+                  <button onClick={() => setView('settings')} className="profile-dropdown-button">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -407,22 +307,7 @@ function TaskDashboard({ user, onLogout }) {
                     </svg>
                     Settings
                   </button>
-                  <button
-                    onClick={onLogout}
-                    style={{
-                      marginTop: '10px',
-                      width: '100%',
-                      backgroundColor: 'transparent',
-                      border: 'none',
-                      color: '#E94E4E',
-                      fontWeight: '700',
-                      fontSize: '16px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                    }}
-                  >
+                  <button onClick={onLogout} className="profile-dropdown-button logout-button">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -442,6 +327,15 @@ function TaskDashboard({ user, onLogout }) {
                   </button>
                 </div>
               )}
+              {showNotifications && (
+                <div className="notifications-panel" style={{backgroundColor: '#fff', border: '1px solid #ccc', padding: '10px', position: 'absolute', top: '40px', right: '0', width: '300px', zIndex: 1200}}>
+                  {notifications.length > 0 ? (
+                    <Notifications notifications={notifications} dismissNotification={dismissNotification} />
+                  ) : (
+                    <div>No notifications</div>
+                  )}
+                </div>
+              )}
             </li>
           </ul>
         </nav>
@@ -452,45 +346,47 @@ function TaskDashboard({ user, onLogout }) {
           <>
             <section className="tasks">
               <h2>My Tasks</h2>
-              <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <label htmlFor="filterStatus" style={{ marginRight: '10px' }}>Filter by Status:</label>
-                  <select
-                    id="filterStatus"
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    style={{ marginRight: '20px' }}
-                  >
-                    <option value="all">All</option>
-                    <option value="incomplete">Incomplete</option>
-                    <option value="in progress">In Progress</option>
-                    <option value="complete">Complete</option>
-                  </select>
-
-                  <label htmlFor="filterDueDate" style={{ marginLeft: '20px', marginRight: '10px' }}>Filter by Due Date:</label>
-                  <select
-                    id="filterDueDate"
-                    value={filterDueDate}
-                    onChange={(e) => setFilterDueDate(e.target.value)}
-                    style={{ marginRight: '20px' }}
-                  >
-                    <option value="all">All</option>
-                    <option value="overdue">Overdue</option>
-                    <option value="today">Today</option>
-                    <option value="week">Next 7 Days</option>
-                  </select>
-
-                  <label htmlFor="sortOption" style={{ marginRight: '10px' }}>Sort by:</label>
-                  <select
-                    id="sortOption"
-                    value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value)}
-                  >
-                    <option value="dueDateAsc">Due Date Ascending</option>
-                    <option value="dueDateDesc">Due Date Descending</option>
-                    <option value="priorityAsc">Priority Ascending</option>
-                    <option value="priorityDesc">Priority Descending</option>
-                  </select>
+              <div className="task-filters" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                  <div className="filter-group">
+                    <label htmlFor="filterStatus">Filter by Status:</label>
+                    <select
+                      id="filterStatus"
+                      value={filterStatus}
+                      onChange={(e) => setFilterStatus(e.target.value)}
+                    >
+                      <option value="all">All</option>
+                      <option value="incomplete">Incomplete</option>
+                      <option value="in progress">In Progress</option>
+                      <option value="complete">Complete</option>
+                    </select>
+                  </div>
+                  <div className="filter-group">
+                    <label htmlFor="filterDueDate">Filter by Due Date:</label>
+                    <select
+                      id="filterDueDate"
+                      value={filterDueDate}
+                      onChange={(e) => setFilterDueDate(e.target.value)}
+                    >
+                      <option value="all">All</option>
+                      <option value="overdue">Overdue</option>
+                      <option value="today">Today</option>
+                      <option value="week">Next 7 Days</option>
+                    </select>
+                  </div>
+                  <div className="filter-group">
+                    <label htmlFor="sortOption">Sort by:</label>
+                    <select
+                      id="sortOption"
+                      value={sortOption}
+                      onChange={(e) => setSortOption(e.target.value)}
+                    >
+                      <option value="dueDateAsc">Due Date Ascending</option>
+                      <option value="dueDateDesc">Due Date Descending</option>
+                      <option value="priorityAsc">Priority Ascending</option>
+                      <option value="priorityDesc">Priority Descending</option>
+                    </select>
+                  </div>
                 </div>
                 <button
                   onClick={() => {
@@ -499,19 +395,24 @@ function TaskDashboard({ user, onLogout }) {
                     setPreFillDate(null);
                   }}
                   title="Add Task"
+                  className="add-task-button"
                   style={{
-                    backgroundColor: '#E94E4E',
-                    border: 'none',
+                    alignSelf: 'flex-start',
+                    backgroundColor: '#007bff',
                     color: '#fff',
-                    padding: '6px 12px',
-                    borderRadius: '8px',
+                    border: 'none',
+                    borderRadius: '6px',
+                    padding: '8px 16px',
                     cursor: 'pointer',
-                    fontWeight: '700',
-                    fontSize: '16px',
+                    fontWeight: 'bold',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                    transition: 'background-color 0.3s ease',
                   }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#0056b3'}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#007bff'}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -524,13 +425,20 @@ function TaskDashboard({ user, onLogout }) {
                 updateTask={updateTask}
                 deleteTask={deleteTask}
                 currentUser={user.email}
-                setEditingTask={setEditingTask}
+                setEditingTask={handleEditTask}
                 addComment={addCommentToTask}
               />
             </section>
           </>
         )}
-        {view === 'calendar' && <CalendarView tasks={filteredTasks} onAddTask={handleAddTaskFromCalendar} />}
+        {view === 'calendar' && (
+          <CalendarView
+            tasks={filteredTasks}
+            onAddTask={handleAddTaskFromCalendar}
+            onNotificationClick={() => setView('notifications')}
+            notificationCount={notifications.length}
+          />
+        )}
         {view === 'create' && (
           <section className="add-task">
             <TaskForm
@@ -544,6 +452,52 @@ function TaskDashboard({ user, onLogout }) {
           </section>
         )}
         {view === 'settings' && <Settings />}
+        {view === 'notifications' && (
+          <section className="notifications-view">
+            <h2>Notifications</h2>
+            {notifications.length === 0 ? (
+              <p>No notifications</p>
+            ) : (
+              <ul className="notifications-list" style={{ listStyle: 'none', padding: 0 }}>
+                {notifications.map((note, index) => (
+                  <li key={index} style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>{note}</span>
+                    <button
+                      onClick={() => dismissNotification(index)}
+                      style={{
+                        backgroundColor: '#E94E4E',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '4px 8px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                      }}
+                      aria-label={`Dismiss notification ${index + 1}`}
+                    >
+                      X
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <button
+              onClick={() => setView('list')}
+              style={{
+                marginTop: '20px',
+                backgroundColor: '#E94E4E',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '10px 20px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              }}
+            >
+              Back to Tasks
+            </button>
+          </section>
+        )}
       </main>
     </>
   );
