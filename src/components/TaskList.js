@@ -54,7 +54,11 @@ function TaskList({ tasks, updateTask, deleteTask, currentUser, setEditingTask, 
               <button onClick={() => setEditingTask(task)} title="Edit" style={{ cursor: 'pointer' }}>
                 Edit
               </button>
-              <button onClick={() => deleteTask(task.id)} title="Delete" style={{ cursor: 'pointer' }}>
+              <button onClick={() => {
+                if (window.confirm('Are you sure you want to delete this task?')) {
+                  deleteTask(task.id);
+                }
+              }} title="Delete" style={{ cursor: 'pointer' }}>
                 Delete
               </button>
             </div>

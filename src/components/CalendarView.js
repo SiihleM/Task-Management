@@ -62,7 +62,8 @@ function CalendarView({ tasks, onAddTask, onTaskClick }) {
         <h2 style={{ margin: 0 }}>
           {currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}
         </h2>
-        <button
+        {/* Removed the existing Add New Task button */}
+        {/* <button
           onClick={() => {
             if (selectedDate) {
               onAddTask(formatDate(selectedDate));
@@ -73,11 +74,11 @@ function CalendarView({ tasks, onAddTask, onTaskClick }) {
           style={{ backgroundColor: '#E94E4E', color: '#fff', padding: '8px 16px', borderRadius: '8px', fontWeight: '700', fontSize: '16px', border: 'none', cursor: 'pointer' }}
         >
           Add New Task
-        </button>
+        </button> */}
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-        <button onClick={prevMonth}>Previous</button>
-        <button onClick={nextMonth}>Next</button>
+        <button onClick={prevMonth} aria-label="Previous Month">&lt;</button>
+        <button onClick={nextMonth} aria-label="Next Month">&gt;</button>
       </div>
       <div className="calendar-grid" style={{ gridTemplateColumns: 'repeat(7, 1fr)', flexGrow: 1, display: 'grid', gap: '5px', overflowY: 'auto' }}>
         {weekdays.map((day) => (

@@ -3,6 +3,7 @@ import TaskList from './TaskList';
 import TaskForm from './TaskForm';
 import CalendarView from './CalendarView';
 import Settings from './Settings';
+import TaskDetails from './TaskDetails';
 import capacitizaLogo from './capacitiza_logo.jpg';
 
 const initialTasks = [
@@ -38,12 +39,13 @@ function TaskDashboard({ user, onLogout }) {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterDueDate, setFilterDueDate] = useState('all');
   const [sortOption, setSortOption] = useState('dueDateAsc');
-  const [view, setView] = useState('list'); // 'list', 'calendar', 'create', 'settings', 'notifications'
+  const [view, setView] = useState('list'); // 'list', 'calendar', 'create', 'settings', 'notifications', 'taskDetails'
   const [searchTerm, setSearchTerm] = useState('');
   const [editingTask, setEditingTask] = useState(null);
   const [preFillDate, setPreFillDate] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   // Ref for header element
   const headerRef = useRef(null);
@@ -448,6 +450,10 @@ function TaskDashboard({ user, onLogout }) {
             onAddTask={handleAddTaskFromCalendar}
             onNotificationClick={() => setView('notifications')}
             notificationCount={notifications.length}
+            onTaskClick={(task) => {
+              setSelectedTask(task);
+              setView('taskDetails');
+            }}
           />
         )}
         {view === 'create' && (
@@ -493,6 +499,15 @@ function TaskDashboard({ user, onLogout }) {
               </ul>
             )}
           </section>
+        )}
+        {view === 'taskDetails' && selectedTask && (
+          <TaskDetails
+            task={selectedTask}
+            onClose={() => {
+              setSelectedTask(null);
+              setView('calendar');
+            }}
+          />
         )}
       </main>
     </>
