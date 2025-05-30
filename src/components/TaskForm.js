@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 const urgencyLevels = ['high', 'medium', 'low'];
+const tagOptions = ['Work', 'Urgent', 'Personal', 'Other']; // 🎯 New Tag Options
 
 function TaskForm({ addTask, currentUser, editingTask, updateTask, cancelEdit, preFillDate }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState('medium');
+  const [tag, setTag] = useState('Work'); // 🎯 New State for Tag
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -15,16 +17,19 @@ function TaskForm({ addTask, currentUser, editingTask, updateTask, cancelEdit, p
       setDescription(editingTask.description || '');
       setDueDate(editingTask.dueDate);
       setPriority(['high', 'medium', 'low'].includes(editingTask.urgency) ? editingTask.urgency : 'medium');
+      setTag(editingTask.tag || 'Work'); // 🎯 Pre-fill tag on edit
     } else if (preFillDate) {
       setTitle('');
       setDescription('');
       setDueDate(preFillDate);
       setPriority('medium');
+      setTag('Work');
     } else {
       setTitle('');
       setDescription('');
       setDueDate('');
       setPriority('medium');
+      setTag('Work');
     }
   }, [editingTask, preFillDate]);
 
@@ -42,6 +47,7 @@ function TaskForm({ addTask, currentUser, editingTask, updateTask, cancelEdit, p
       urgency: priority,
       assignedTo: currentUser,
       status: 'incomplete',
+      tag, // 🎯 Include tag in task data
     };
     if (editingTask) {
       updateTask({ ...taskData, id: editingTask.id });
@@ -53,6 +59,7 @@ function TaskForm({ addTask, currentUser, editingTask, updateTask, cancelEdit, p
       setDescription('');
       setDueDate('');
       setPriority('medium');
+      setTag('Work');
     }
   };
 
@@ -97,6 +104,20 @@ function TaskForm({ addTask, currentUser, editingTask, updateTask, cancelEdit, p
           {urgencyLevels.map((level) => (
             <option key={level} value={level}>
               {level.charAt(0).toUpperCase() + level.slice(1)}
+            </option>
+          ))}
+        </select>
+
+        {/* 🎯 New Tag Selector */}
+        <label htmlFor="tag">Task Tag</label>
+        <select
+          id="tag"
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+        >
+          {tagOptions.map((tagOption) => (
+            <option key={tagOption} value={tagOption}>
+              {tagOption}
             </option>
           ))}
         </select>

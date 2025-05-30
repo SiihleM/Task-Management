@@ -506,3 +506,61 @@ main {
   font-weight: 700;
   box-shadow: 0 0 6px rgba(233, 78, 78, 0.7);
 }
+
+/*NEW ADDS*/
+
+
+
+/* === Colored Tags === */
+.tag {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 10px;
+  color: #fff;
+  margin-right: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+
+.tag.work {
+  background-color: #6c5ce7; /* purple */
+}
+
+.tag.personal {
+  background-color: #00b894; /* teal green */
+}
+
+.tag.urgent {
+  background-color: #d63031; /* red */
+}
+
+.tag.study {
+  background-color: #0984e3; /* blue */
+}
+
+/* === Priority Colors === */
+.priority {
+  display: inline-block;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  text-align: center;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.priority.high {
+  background-color: #e74c3c; /* bright red */
+}
+
+.priority.medium {
+  background-color: #f39c12; /* orange */
+}
+
+.priority.low {
+  background-color: #27ae60; /* green */
+}
