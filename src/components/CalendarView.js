@@ -6,10 +6,9 @@ const urgencyColors = {
   low: '#2A9D8F',
 };
 
-function CalendarView({ tasks }) {
+function CalendarView({ tasks, onAddTask, onTaskClick }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTask, setSelectedTask] = useState(null);
 
   const formatDate = (date) => date.toISOString().split('T')[0];
 
@@ -39,14 +38,15 @@ function CalendarView({ tasks }) {
 
   const handleDayClick = (date) => {
     setSelectedDate(date);
+    if (onAddTask) {
+      onAddTask(formatDate(date));
+    }
   };
 
   const handleTaskClick = (task) => {
-    setSelectedTask(task);
-  };
-
-  const closeModal = () => {
-    setSelectedTask(null);
+    if (onTaskClick) {
+      onTaskClick(task);
+    }
   };
 
   const calendarCells = [];
@@ -174,45 +174,6 @@ function CalendarView({ tasks }) {
           );
         })}
       </div>
-
-      {/* Task Detail Modal */}
-      {selectedTask && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 999,
-          }}
-          onClick={closeModal}
-        >
-          <div
-            style={{
-              backgroundColor: '#fff',
-              padding: '20px',
-              borderRadius: '8px',
-              maxWidth: '400px',
-              width: '90%',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3>{selectedTask.title}</h3>
-            <p><strong>Description:</strong> {selectedTask.description || 'No description available.'}</p>
-            <p><strong>Priority:</strong> {selectedTask.urgency || 'N/A'}</p>
-            <p><strong>Tag:</strong> {selectedTask.tag || 'N/A'}</p>
-            <p><strong>Due Date:</strong> {selectedTask.dueDate || 'N/A'}</p>
-            <button onClick={closeModal} style={{ marginTop: '10px', backgroundColor: '#E94E4E', color: '#fff', border: 'none', borderRadius: '4px', padding: '6px 12px', cursor: 'pointer' }}>
-              Close
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
