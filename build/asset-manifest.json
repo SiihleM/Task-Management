@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/Tibule12/Task-Management.git/static/css/main.830c15e5.css",
-    "main.js": "/Tibule12/Task-Management.git/static/js/main.da8b0f84.js",
-    "index.html": "/Tibule12/Task-Management.git/index.html",
-    "main.830c15e5.css.map": "/Tibule12/Task-Management.git/static/css/main.830c15e5.css.map",
-    "main.da8b0f84.js.map": "/Tibule12/Task-Management.git/static/js/main.da8b0f84.js.map"
+    "main.css": "/Task-Management/static/css/main.830c15e5.css",
+    "main.js": "/Task-Management/static/js/main.da8b0f84.js",
+    "index.html": "/Task-Management/index.html",
+    "main.830c15e5.css.map": "/Task-Management/static/css/main.830c15e5.css.map",
+    "main.da8b0f84.js.map": "/Task-Management/static/js/main.da8b0f84.js.map"
   },
   "entrypoints": [
     "static/css/main.830c15e5.css",
