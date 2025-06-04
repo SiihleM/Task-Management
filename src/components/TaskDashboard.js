@@ -353,7 +353,7 @@ function TaskDashboard({ user, onLogout }) {
         </nav>
       </header>
 
-      <main style={{ paddingTop: headerHeight, padding: '20px' }}>
+      <main style={{ paddingTop: headerHeight, paddingRight: '20px', paddingBottom: '20px', paddingLeft: '20px' }}>
         {view === 'list' && (
           <>
             <section className="tasks">
