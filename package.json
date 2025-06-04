@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "React Task Management Tracker based on CAPACITI proposal",
   "main": "index.js",
-  "homepage": "https://github.com/SiihleM/Task-Management",
+  "homepage": "https://github.com/Tibule12/Task-Management",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
