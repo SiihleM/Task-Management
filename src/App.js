@@ -6,10 +6,12 @@ import TaskDashboard from './components/TaskDashboard';
 import CuteNotifications from './components/CuteNotifications';
 
 function App() {
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  // Clear user on app load to force login redirect
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    localStorage.removeItem('user');
+  }, []);
   const [notifications, setNotifications] = useState([
     'Welcome to the Task Management App!',
     'You have 3 tasks due today.',
