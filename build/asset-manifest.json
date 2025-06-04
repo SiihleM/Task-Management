@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/SiihleM/Task-Management/static/css/main.830c15e5.css",
+    "main.js": "/SiihleM/Task-Management/static/js/main.9d306d35.js",
+    "index.html": "/SiihleM/Task-Management/index.html",
+    "main.830c15e5.css.map": "/SiihleM/Task-Management/static/css/main.830c15e5.css.map",
+    "main.9d306d35.js.map": "/SiihleM/Task-Management/static/js/main.9d306d35.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.830c15e5.css",
+    "static/js/main.9d306d35.js"
+  ]
+}

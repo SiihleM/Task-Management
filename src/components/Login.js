@@ -40,7 +40,7 @@ function Login({ onLogin }) {
       {/* Left Image Section */}
       <div style={{
         flex: 1,
-        backgroundImage: 'url("https://static.vecteezy.com/system/resources/thumbnails/014/938/026/small_2x/businessman-hand-project-manager-working-and-update-tasks-and-gantt-chart-scheduling-virtual-diagram-with-smart-phone-tablet-and-laptop-in-office-photo.jpg")',
+        backgroundImage: 'url("https://media.istockphoto.com/id/1439422713/photo/project-manager-working-update-tasks-with-milestones-progress-planning-gantt-chart-scheduling.jpg?s=170667a&w=0&k=20&c=kWvPJ3S88w1Myg-r0yK95Yb22MTF-jCcfte5Cn-X31I=")',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }} />
@@ -129,3 +129,4 @@ const buttonStyle = {
 };
 
 export default Login;
+
