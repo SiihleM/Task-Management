@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/SiihleM/Task-Management/static/css/main.830c15e5.css",
-    "main.js": "/SiihleM/Task-Management/static/js/main.9d306d35.js",
-    "index.html": "/SiihleM/Task-Management/index.html",
-    "main.830c15e5.css.map": "/SiihleM/Task-Management/static/css/main.830c15e5.css.map",
-    "main.9d306d35.js.map": "/SiihleM/Task-Management/static/js/main.9d306d35.js.map"
+    "main.css": "/Task-Management/static/css/main.9222f1a3.css",
+    "main.js": "/Task-Management/static/js/main.3b6ffa0a.js",
+    "index.html": "/Task-Management/index.html",
+    "main.9222f1a3.css.map": "/Task-Management/static/css/main.9222f1a3.css.map",
+    "main.3b6ffa0a.js.map": "/Task-Management/static/js/main.3b6ffa0a.js.map"
   },
   "entrypoints": [
-    "static/css/main.830c15e5.css",
-    "static/js/main.9d306d35.js"
+    "static/css/main.9222f1a3.css",
+    "static/js/main.3b6ffa0a.js"
   ]
 }
