@@ -61,6 +61,7 @@ function CalendarPage() {
   const [selectedTask, setSelectedTask] = useState(null);
 
   const handleAddTask = (date) => {
+    console.log('handleAddTask called with date:', date);
     const newTask = {
       id: Date.now(),
       title: `New Task on ${date}`,

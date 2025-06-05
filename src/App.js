@@ -3,8 +3,6 @@ import { Routes, Route, Navigate, useNavigate, useLocation, Link } from 'react-r
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import TaskDashboard from './components/TaskDashboard';
-import CuteNotifications from './components/CuteNotifications';
-
 function App() {
   // Clear user on app load to force login redirect
   const [user, setUser] = useState(null);
@@ -51,7 +49,6 @@ function App() {
 
   return (
     <div className="container">
-      <CuteNotifications notifications={notifications} onClose={handleNotificationClose} />
       <Routes>
         <Route
           path="/login"
@@ -65,7 +62,7 @@ function App() {
           path="/notifications"
           element={
             user ? (
-              <CuteNotifications notifications={notifications} onClose={handleNotificationClose} />
+              <Navigate to="/" />
             ) : (
               <Navigate to="/login" />
             )
