@@ -6,6 +6,7 @@ import Settings from './Settings';
 import TaskDetails from './TaskDetails';
 import capacitizaLogo from './capacitiza_logo.jpg';
 
+/*
 const initialTasks = [
   {
     id: 1,
@@ -26,6 +27,7 @@ const initialTasks = [
     dueDate: '2024-06-12',
   },
 ];
+*/
 
 import TaskComments from './TaskComments';
 import Notifications from './Notifications';
