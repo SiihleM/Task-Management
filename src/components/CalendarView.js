@@ -37,8 +37,10 @@ function CalendarView({ tasks, onAddTask, onTaskClick }) {
   };
 
   const handleDayClick = (date) => {
+    console.log('Day clicked:', date);
     setSelectedDate(date);
     if (onAddTask) {
+      console.log('Calling onAddTask with date:', formatDate(date));
       onAddTask(formatDate(date));
     }
   };
