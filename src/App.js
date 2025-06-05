@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate, useLocation, Link } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import TaskDashboard from './components/TaskDashboard';
+
 function App() {
   // Clear user on app load to force login redirect
   const [user, setUser] = useState(null);
@@ -10,10 +11,7 @@ function App() {
   useEffect(() => {
     localStorage.removeItem('user');
   }, []);
-  const [notifications, setNotifications] = useState([
-    'Welcome to the Task Management App!',
-    'You have 3 tasks due today.',
-  ]);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,10 +39,6 @@ function App() {
   const handleLogout = () => {
     setUser(null);
     navigate('/login');
-  };
-
-  const handleNotificationClose = (index) => {
-    setNotifications((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
